@@ -1,42 +1,23 @@
 
 package rv;
 
-import java.util.HashMap;
-
-import assertion.Assertion;
-import fits.BackEnd;
-import fits.BankAccount;
-import fits.UserInfo;
+import ltl.structure.*;
 
 public class Verification {
-static public boolean fitsHasBeenInitialised;
-static public HashMap<UserInfo,HashMap<Integer, Integer>> accountRequestCount;
-static public Integer fitsExternalMoneyTransferCount;
-static public Double fitsExternalMoneyTransferAmount;
 
-static public void setupVerification()
-{
-fitsHasBeenInitialised = false;
-accountRequestCount = new HashMap<UserInfo,HashMap<Integer, Integer>>();
-fitsExternalMoneyTransferCount = 0;
-fitsExternalMoneyTransferAmount = 0.0;
+public static Boolean initialised = false;
+static public LTL currentLTL6d3586;
+static public Boolean triggered6d3586;
+
+static public void setupVerification() {
+
+currentLTL6d3586 = new Until(new Not(new MatchEvent(new Event("before","UserInfo.openSession"))),new MatchEvent(new Event("after","BackEnd.initialise")));
+triggered6d3586 = false;
+
+
 
 Properties.setupVerification();
-}
+initialised = true;} }
 
-// Property 4 verification
-// A bank account approved by the administrator may not have the same account
-// number as any other bank account already existing in the system
 
-public static void fitsAdminApprovingAccount(String new_account_number, BackEnd fits) {
-for (UserInfo user : fits.getUsers()) {
-for (BankAccount account : user.getAccounts()) {
-if (account.isOpen()) {
-Assertion.check(!account.getAccountNumber().equals(new_account_number), "P4 violated");
-}
-}
-}
-}
-
-}
 
