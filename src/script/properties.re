@@ -16,10 +16,10 @@ import assertion.Assertion;
 
 REGULAREXPRESSIONS
 
-// P5
-// Once a user is disabled, he or she may not withdraw from an account until 
-// being made enable again.
+// P2
+// The transaction system must be initialised before any user logs in.
+// + The initialisation can only happen before shutdown.
 
-property foreach target (UserInfo u) bad behaviour {
-(?)* ; [before makeDisabled] ; (![before makeEnabled])* ; [before withdrawFrom]
+property bad behaviour {
+(![before BackEnd.initialise])*;([before BackEnd.initialise];(![before BackEnd.shutdown])*;[before BackEnd.shutdown])*;(![before BackEnd.initialise])*;[before UserInfo.openSession]
 }
