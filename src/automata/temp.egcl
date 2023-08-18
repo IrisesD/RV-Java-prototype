@@ -1,0 +1,140 @@
+VERIFICATIONCODE
+
+
+package rv;
+
+import java.util.HashMap;
+
+import fits.UserInfo;
+import fits.UserSession;
+
+public class Verification {
+
+static public HashMap<UserInfo,Integer> countSessions;
+
+static public void setupVerification() {
+// required to reset the automata to their initial state
+Properties.setupVerification();
+
+
+hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> ();
+statefbaa4 = new HashMap<UserInfo,String> ();
+
+hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> ();
+stated50c0 = new HashMap<UserInfo,String> ();
+
+hasTriggered53b93 = new HashMap<UserInfo,Boolean> ();
+state53b93 = new HashMap<UserInfo,String> ();
+
+hasTriggeredde80c = new HashMap<UserSession,Boolean> ();
+statede80c = new HashMap<UserSession,String> ();
+countSessions = new HashMap<UserInfo,Integer>();
+
+}
+
+
+
+static public HashMap<UserInfo,String> statefbaa4;
+static public HashMap<UserInfo,Boolean> hasTriggeredfbaa4;
+
+static public HashMap<UserInfo,String> stated50c0;
+static public HashMap<UserInfo,Boolean> hasTriggeredd50c0;
+
+static public HashMap<UserInfo,String> state53b93;
+static public HashMap<UserInfo,Boolean> hasTriggered53b93;
+
+static public HashMap<UserSession,String> statede80c;
+static public HashMap<UserSession,Boolean> hasTriggeredde80c;
+}
+
+PRELUDE
+
+
+package rv;
+
+import assertion.Assertion;
+import fits.UserInfo;
+import fits.UserSession;
+import java.util.HashMap;
+
+
+
+
+
+RULES
+
+foreach target (UserInfo u) keep (Boolean hasTriggeredfbaa4 defaultTo false, String statefbaa4 defaultTo "Enabled") { 
+
+UserInfo.makeDisabled(..)target (UserInfo u) | !hasTriggeredfbaa4 && statefbaa4.equals("Enabled") && (true)
+  -> {{}statefbaa4 = "Disabled";hasTriggeredfbaa4 = true;}
+
+
+UserInfo.makeEnabled(..)target (UserInfo u) | !hasTriggeredfbaa4 && statefbaa4.equals("Disabled") && (true)
+  -> {{}statefbaa4 = "Enabled";hasTriggeredfbaa4 = true;}
+
+
+UserInfo.withdrawFrom(..)target (UserInfo u) | !hasTriggeredfbaa4 && statefbaa4.equals("Disabled") && (true)
+  -> {{}statefbaa4 = "Bad";hasTriggeredfbaa4 = true;
+ System.out.println("P5 violated");}
+
+}
+foreach target (UserInfo u) keep (Boolean hasTriggeredd50c0 defaultTo false, String stated50c0 defaultTo "NonGreylisted",Integer count defaultTo 0) { 
+
+UserInfo.makeGreylisted(..)target (UserInfo u) | !hasTriggeredd50c0 && stated50c0.equals("NonGreylisted") && (true)
+  -> {{ count = 0; }stated50c0 = "Greylisted";hasTriggeredd50c0 = true;}
+
+
+UserInfo.depositTo(..)target (UserInfo u) | !hasTriggeredd50c0 && stated50c0.equals("Greylisted") && (true)
+  -> {{  count = count + 1; }stated50c0 = "Greylisted";hasTriggeredd50c0 = true;}
+
+
+UserInfo.makeBlacklisted(..)target (UserInfo u) | !hasTriggeredd50c0 && stated50c0.equals("Greylisted") && (true)
+  -> {{  count = 0; }stated50c0 = "NonGreylisted";hasTriggeredd50c0 = true;}
+
+
+UserInfo.makeWhitelisted(..)target (UserInfo u) | !hasTriggeredd50c0 && stated50c0.equals("Greylisted") && (count >= 3)
+  -> {{}stated50c0 = "NonGreylisted";hasTriggeredd50c0 = true;}
+
+
+UserInfo.makeWhitelisted(..)target (UserInfo u) | !hasTriggeredd50c0 && stated50c0.equals("Greylisted") && (count < 3)
+  -> {{}stated50c0 = "Bad";hasTriggeredd50c0 = true;
+ System.out.println("P6 violated");}
+
+}
+foreach target (UserInfo u) keep (Boolean hasTriggered53b93 defaultTo false, String state53b93 defaultTo "Start") { 
+
+UserInfo.openSession(..)target (UserInfo u) | !hasTriggered53b93 && state53b93.equals("Start") && (true)
+  -> {{ Verification.countSessions.put(u,Verification.countSessions.getOrDefault(u,0)+1); if (Verification.countSessions.getOrDefault(u,0) > 3) { Assertion.alert("P9 violated"); } }state53b93 = "Start";hasTriggered53b93 = true;}
+
+
+UserInfo.closeSession(..)target (UserInfo u) | !hasTriggered53b93 && state53b93.equals("Start") && (true)
+  -> {{ Verification.countSessions.put(u,Verification.countSessions.get(u)-1); }state53b93 = "Start";hasTriggered53b93 = true;}
+
+}
+foreach target (UserSession s) keep (Boolean hasTriggeredde80c defaultTo false, String statede80c defaultTo "LoggedOut") { 
+
+UserSession.openSession(..)target (UserSession s) | !hasTriggeredde80c && statede80c.equals("LoggedOut") && (true)
+  -> {{}statede80c = "LoggedIn";hasTriggeredde80c = true;}
+
+
+UserSession.closeSession(..)target (UserSession s) | !hasTriggeredde80c && statede80c.equals("LoggedIn") && (true)
+  -> {{}statede80c = "LoggedOut";hasTriggeredde80c = true;}
+
+
+UserSession.log(..)target (UserSession s) | !hasTriggeredde80c && statede80c.equals("LoggedOut") && (true)
+  -> {{}statede80c = "Bad";hasTriggeredde80c = true;
+ System.out.println("P10 violated");}
+
+}
+before *.*(..) | -> { 
+hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> ();
+hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> ();
+hasTriggered53b93 = new HashMap<UserInfo,Boolean> ();
+hasTriggeredde80c = new HashMap<UserSession,Boolean> ();}
+
+after *.*(..) | -> { 
+hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> ();
+hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> ();
+hasTriggered53b93 = new HashMap<UserInfo,Boolean> ();
+hasTriggeredde80c = new HashMap<UserSession,Boolean> ();
+}

@@ -2,6 +2,9 @@ package egcl;
 
 import java.util.ArrayList;
 
+import egcl_rtime.Foreach;
+import egcl_rtime.Rule;
+
 public class RuleParser {
 
 	public static ArrayList<Rule> rules;

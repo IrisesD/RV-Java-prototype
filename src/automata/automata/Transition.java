@@ -1,9 +1,7 @@
 package automata;
 
 import java.util.ArrayList;
-
-import egcl.Event;
-import egcl.Rule;
+import egcl.*;
 
 public class Transition {
 
