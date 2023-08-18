@@ -1,4 +1,4 @@
-if [ $1 == "egcl" ];
+if [ $1 == "-egcl" ];
 then
     cd src/pure_egcl/;
     javac -d . */*.java;
@@ -6,7 +6,7 @@ then
     cd ../monitoredfits/;
     ajc -18 */*.java */*.aj -cp aspectjrt.jar;
     java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar fits.Main
-elif [ $1 == "automata" ];
+elif [ $1 == "-automata" ];
 then
     cd src/automata/;
     javac -d . */*.java;
@@ -14,7 +14,7 @@ then
     cd ../monitoredfits/;
     ajc -18 */*.java */*.aj -cp aspectjrt.jar;
     java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar fits.Main
-elif [ $1 == "re" ];
+elif [ $1 == "-re" ];
 then
     cd src/re/;
     javac -d . */*.java;
@@ -26,7 +26,7 @@ then
     cd ../monitoredfits/;
     ajc -18 */*.java */*.aj -cp aspectjrt.jar:re.jar:egcl.jar;
     java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar:re.jar:egcl.jar fits.Main
-elif [ $1 == "ltl" ];
+elif [ $1 == "-ltl" ];
 then
     cd src/ltl/;
     javac -d . */*.java;
@@ -38,7 +38,7 @@ then
     cd ../monitoredfits/;
     ajc -18 */*.java */*.aj -cp aspectjrt.jar:ltl.jar:egcl.jar;
     java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar:ltl.jar:egcl.jar fits.Main
-elif [ $1 == "rtime" ];
+elif [ $1 == "-rtime" ];
 then
     cd src/rtime/;
     javac -d . */*.java;
@@ -50,5 +50,14 @@ then
     cd ../monitoredfits_rtime/;
     ajc -18 */*.java */*.aj -cp aspectjrt.jar:timers.jar:egcl.jar;
     java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar:timers.jar:egcl.jar fits.Main
+elif [ $1 == "-h" ];
+then 
+    echo "Usage: ./run.sh [option]"
+    echo "Options:"
+    echo "  -egcl: run the egcl example"
+    echo "  -automata: run the automata example"
+    echo "  -re: run the re example"
+    echo "  -ltl: run the ltl example"
+    echo "  -rtime: run the real-time example"
 fi
 
