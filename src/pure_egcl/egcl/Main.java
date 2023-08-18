@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import egcl_rtime.EGCLScript;
 
 public class Main {
 	public static void main(String[] args) {

@@ -2,9 +2,6 @@ package egcl;
 
 import java.util.ArrayList;
 
-import egcl_rtime.AspectJScript;
-import egcl_rtime.Event;
-
 public class Rule {
 	// The event part
 	private Event event;

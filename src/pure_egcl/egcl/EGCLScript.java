@@ -5,11 +5,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import egcl_rtime.AspectJScript;
-import egcl_rtime.Foreach;
-import egcl_rtime.Rule;
-import egcl_rtime.RuleParser;
-
 public class EGCLScript {
 
 	// Data

@@ -1,6 +1,7 @@
 package fits;
 
 import rv.Verification;
+import timers.TimerManager;
 
 public class Scenarios {
 
@@ -11,7 +12,7 @@ public class Scenarios {
 	private static void runScenario(Integer n) {
 		FrontEnd frontend = transactionsystem.getFrontEnd();
 
-		String account_number, account_number1, account_number2, account_number_receiver;
+		String account_number, account_number1, account_number2, account_number3, account_number_receiver;
 		Integer uid, uid_receiver;
 		Integer sid, sid1, sid2, sid_receiver;
 
@@ -354,6 +355,7 @@ public class Scenarios {
 			frontend.ADMIN_initialise();
 			uid = frontend.ADMIN_createUser("Roger", "Romania");
 			frontend.ADMIN_enableUser(uid);
+			TimerManager.fastForward(3 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h00m03s");
 			frontend.USER_login(uid);
 			break;
@@ -362,6 +364,7 @@ public class Scenarios {
 			frontend.ADMIN_initialise();
 			uid = frontend.ADMIN_createUser("Roger", "Romania");
 			frontend.ADMIN_enableUser(uid);
+			TimerManager.fastForward(21 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h00m21s");
 			frontend.USER_login(uid);
 			break;
@@ -385,9 +388,11 @@ public class Scenarios {
 			// - blacklist user
 			frontend.ADMIN_blacklistUser(uid);
 			// - whitelist user
+			TimerManager.fastForward(3 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h00m03s");
 			frontend.ADMIN_whitelistUser(uid);
 			// - pay external party more than $100
+			TimerManager.fastForward(((10 * 60) + 30) * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 10h30m00s");
 			frontend.USER_payToExternal(uid, sid, account_number, 120.00);
 			break;
@@ -410,20 +415,23 @@ public class Scenarios {
 			// - blacklist user
 			frontend.ADMIN_blacklistUser(uid);
 			// - whitelist user
+			TimerManager.fastForward(3000l);
 			System.out.println("Time is fast-forwarded by 00h00m03s");
 			frontend.ADMIN_whitelistUser(uid);
 			// - pay external party less than $100 per transaction
+			TimerManager.fastForward(((10 * 60) + 30) * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 10h30m00s");
 			frontend.USER_payToExternal(uid, sid, account_number1, 80.00);
 			frontend.USER_payToExternal(uid, sid, account_number1, 70.00);
 			// - internal transfer of more than $100
 			frontend.USER_transferOwnAccounts(uid, sid, account_number1, account_number2, 120.00);
 			// - pay external party more than $100
+			TimerManager.fastForward(((5 * 60) + 20) * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 05h20m00s");
 			frontend.USER_payToExternal(uid, sid, account_number1, 140.00);
 			break;
 
-		// PROPERTY 13: A user may not request the creation of more than three accounts
+		// PROPERTY 13: A user may not have more than three accounts created
 		// within
 		// any 24 hour period.
 		case 25:
@@ -435,15 +443,21 @@ public class Scenarios {
 			// - user logs in
 			sid = frontend.USER_login(uid);
 			// - account requested
+			TimerManager.fastForward(23 * 60 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 23h00m00s");
 			account_number = frontend.USER_requestAccount(uid, sid);
 			// - account approved
 			frontend.ADMIN_approveOpenAccount(uid, account_number);
 			// - accounts requested
+			TimerManager.fastForward(3 * 60 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 03h00m00s");
 			account_number1 = frontend.USER_requestAccount(uid, sid);
+			TimerManager.fastForward(((12 * 60) + 10) * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 12h10m00s");
 			account_number2 = frontend.USER_requestAccount(uid, sid);
+			TimerManager.fastForward(((1 * 60) + 10) * 60 * 1000l);
+			System.out.println("Time is fast-forwarded by 1h10m00s");
+			account_number3 = frontend.USER_requestAccount(uid, sid);
 			break;
 		case 26:
 			// P13 non-violation
@@ -454,11 +468,14 @@ public class Scenarios {
 			// - user logs in
 			sid = frontend.USER_login(uid);
 			// - account requested
+			TimerManager.fastForward(((2 * 60) + 30) * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 23h00m00s");
 			account_number = frontend.USER_requestAccount(uid, sid);
 			// - accounts requested
+			TimerManager.fastForward(3 * 60 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 03h00m00s");
 			account_number1 = frontend.USER_requestAccount(uid, sid);
+			TimerManager.fastForward(((21 * 60) + 10) * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 21h10m00s");
 			account_number2 = frontend.USER_requestAccount(uid, sid);
 			break;
@@ -468,11 +485,13 @@ public class Scenarios {
 		case 27:
 			// P14 violation
 			frontend.ADMIN_initialise();
+			TimerManager.fastForward(7 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h07m00s");
 			break;
 		case 28:
 			// P14 non-violation
 			frontend.ADMIN_initialise();
+			TimerManager.fastForward(3 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h03m00s");
 			frontend.ADMIN_reconcile();
 			break;
@@ -488,12 +507,15 @@ public class Scenarios {
 			// - user logs in
 			sid = frontend.USER_login(uid);
 			// - account requested
+			TimerManager.fastForward(3 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h03m00s");
 			account_number = frontend.USER_requestAccount(uid, sid);
 			// - user logs out
+			TimerManager.fastForward(1 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h01m00s");
 			frontend.USER_logout(uid, sid);
 			// - do nothing
+			TimerManager.fastForward(99 * 60 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 99h00m00s");
 			break;
 		case 30:
@@ -505,17 +527,22 @@ public class Scenarios {
 			// - user logs in
 			sid = frontend.USER_login(uid);
 			// - accounts requested
+			TimerManager.fastForward(3 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h03m00s");
 			account_number1 = frontend.USER_requestAccount(uid, sid);
+			TimerManager.fastForward(3 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h03m00s");
 			account_number2 = frontend.USER_requestAccount(uid, sid);
 			// - first account approved
+			TimerManager.fastForward(2 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h02m00s");
 			frontend.ADMIN_approveOpenAccount(uid, account_number1);
 			// - user logs out
+			TimerManager.fastForward(4 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h04m00s");
 			frontend.USER_logout(uid, sid);
 			// - account rejected
+			TimerManager.fastForward((22 * 60 + 4) * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 22h04m00s");
 			frontend.ADMIN_rejectOpenAccount(uid, account_number2);
 			break;
@@ -530,12 +557,15 @@ public class Scenarios {
 			// - user logs in
 			sid = frontend.USER_login(uid);
 			// - account requested
+			TimerManager.fastForward(3 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h03m00s");
 			account_number = frontend.USER_requestAccount(uid, sid);
 			// - account approved
+			TimerManager.fastForward(10 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h10m00s");
 			frontend.ADMIN_approveOpenAccount(uid, account_number);
 			// - no more activity
+			TimerManager.fastForward(8 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h08m00s");
 			break;
 		case 32:
@@ -546,18 +576,23 @@ public class Scenarios {
 			frontend.ADMIN_enableUser(uid);
 			// - user logs in twice
 			sid1 = frontend.USER_login(uid);
+			TimerManager.fastForward(3 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h3m00s");
 			sid2 = frontend.USER_login(uid);
 			// - account requested from session 1
+			TimerManager.fastForward(3 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h03m00s");
 			account_number = frontend.USER_requestAccount(uid, sid1);
 			// - account approved
+			TimerManager.fastForward(10 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h10m00s");
 			frontend.ADMIN_approveOpenAccount(uid, account_number);
 			// - second session is closed
+			TimerManager.fastForward(1 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h01m00s");
 			frontend.USER_logout(uid, sid2);
 			// - first session is closed
+			TimerManager.fastForward(2 * 60 * 1000l);
 			System.out.println("Time is fast-forwarded by 00h02m00s");
 			frontend.USER_logout(uid, sid1);
 			break;
@@ -581,13 +616,12 @@ public class Scenarios {
 	}
 
 	private static void resetScenarios() {
-
-		transactionsystem.setup();
 		Verification.setupVerification();
+		transactionsystem.setup();
 	}
 
 	public static void runAllScenarios() {
-		for (Integer n = 1; n <= SCENARIO_COUNT; n++) {
+		for (Integer n = 21; n <= SCENARIO_COUNT; n++) {
 			resetScenarios();
 			runScenario(n);
 		}

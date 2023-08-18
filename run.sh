@@ -1,13 +1,13 @@
-cd src/MyRVTool/
 
-if (($1 == egcl || $1 == automata))
+
+if (($1 == egcl))
 then
-    # javac -d . egcl/*.java
-    # javac -d . automata/*.java
-    # java $1.Main
+    cd src/pure_egcl/
+    javac -d . */*.java
+    java egcl.Main
     cd ../monitoredfits/
-    ajc -18 */*.java */*.aj -cp aspectjrt.jar
-    java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar fits.Main
+    ajc -18 */*.java */*.aj -cp aspectjrt.jar:timers:jar:egcl.jar
+    java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar:timers.jar:egcl.Main fits.Main
 fi
 if (($1 == re))
 then

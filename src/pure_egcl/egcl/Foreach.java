@@ -2,8 +2,6 @@ package egcl;
 
 import java.util.ArrayList;
 
-import egcl_rtime.AspectJScript;
-import egcl_rtime.Rule;
 
 public class Foreach {
 
