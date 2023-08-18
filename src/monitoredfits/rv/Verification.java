@@ -1,48 +1,23 @@
 
-
 package rv;
 
-import java.util.HashMap;
-
-import fits.UserInfo;
-import fits.UserSession;
+import ltl.structure.*;
 
 public class Verification {
 
-static public HashMap<UserInfo,Integer> countSessions;
+public static Boolean initialised = false;
+static public LTL currentLTL6d3586;
+static public Boolean triggered6d3586;
 
 static public void setupVerification() {
-// required to reset the automata to their initial state
+
+currentLTL6d3586 = new Until(new Not(new MatchEvent(new Event("before","UserInfo.openSession"))),new MatchEvent(new Event("after","BackEnd.initialise")));
+triggered6d3586 = false;
+
+
+
 Properties.setupVerification();
+initialised = true;} }
 
 
-hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> ();
-statefbaa4 = new HashMap<UserInfo,String> ();
-
-hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> ();
-stated50c0 = new HashMap<UserInfo,String> ();
-
-hasTriggered53b93 = new HashMap<UserInfo,Boolean> ();
-state53b93 = new HashMap<UserInfo,String> ();
-
-hasTriggeredde80c = new HashMap<UserSession,Boolean> ();
-statede80c = new HashMap<UserSession,String> ();
-countSessions = new HashMap<UserInfo,Integer>();
-
-}
-
-
-
-static public HashMap<UserInfo,String> statefbaa4;
-static public HashMap<UserInfo,Boolean> hasTriggeredfbaa4;
-
-static public HashMap<UserInfo,String> stated50c0;
-static public HashMap<UserInfo,Boolean> hasTriggeredd50c0;
-
-static public HashMap<UserInfo,String> state53b93;
-static public HashMap<UserInfo,Boolean> hasTriggered53b93;
-
-static public HashMap<UserSession,String> statede80c;
-static public HashMap<UserSession,Boolean> hasTriggeredde80c;
-}
 
