@@ -1,9 +1,6 @@
-package egcl_rtime;
+package egcl;
 
 import java.util.ArrayList;
-
-import egcl.AspectJScript;
-import egcl.Event;
 
 public class Rule {
 	// The event part

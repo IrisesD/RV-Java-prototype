@@ -1,23 +1,48 @@
 
 package rv;
 
-import re.structure.*;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import assertion.Assertion;
+import fits.BackEnd;
+import fits.BankAccount;
+import fits.UserInfo;
+
+import timers.*;
+
 
 public class Verification {
 
-public static Boolean initialised = false;
-static public RegExp currentRegExp677327b6;
-static public Boolean triggered677327b6;
+//Property 11
+public static Long initialisedTime;
 
-static public void setupVerification() {
+//Property 14
+public static Timer initialisationTimer;
+public static Boolean fitsReconciled = false;
+public static Boolean initialisationTimerSet = false;
 
-currentRegExp677327b6 = new SequentialComposition(new SequentialComposition(new SequentialComposition(new Repetition(new MatchEventComplement(new Event("before","BackEnd.initialise"))),new Repetition(new SequentialComposition(new SequentialComposition(new MatchEvent(new Event("before","BackEnd.initialise")),new Repetition(new MatchEventComplement(new Event("before","BackEnd.shutdown")))),new MatchEvent(new Event("before","BackEnd.shutdown"))))),new Repetition(new MatchEventComplement(new Event("before","BackEnd.initialise")))),new MatchEvent(new Event("before","UserInfo.openSession")));
-triggered677327b6 = false;
+//Property 15
+public static HashSet<String> awaitingApproval;
 
+static public void setupVerification()
+{
+TimerManager.reset();
 
+//Property 11
+initialisedTime = 0l;
+
+//Property 14
+initialisationTimer = new Timer("initialisationTimer",5*60*1000l);
+fitsReconciled = false;
+initialisationTimerSet = false;
+
+//Property 15
+awaitingApproval = new HashSet<String>();
 
 Properties.setupVerification();
-initialised = true;} }
+}
 
 
+}
 

@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
 public class EGCLScript {
 
 	// Data

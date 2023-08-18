@@ -2,9 +2,6 @@ package egcl;
 
 import java.util.ArrayList;
 
-import egcl.AspectJScript;
-import egcl.Rule;
-
 public class Foreach {
 
 	private ArrayList<Rule> rules;
