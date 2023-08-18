@@ -1,185 +1,93 @@
 
-
 package rv;
 
+import java.util.HashMap;
+import java.util.ArrayList;
+import timers.*;
 import assertion.Assertion;
+import fits.BackEnd;
+import fits.BankAccount;
+import fits.FrontEnd;
 import fits.UserInfo;
 import fits.UserSession;
-import java.util.HashMap;
-
-
-
-
 
 
 
 
 public aspect Properties {
 static void setupVerification() {
-initialisehasTriggeredfbaa4();initialisestatefbaa4();
-initialisehasTriggeredd50c0();initialisestated50c0();initialisecount();
-initialisehasTriggered53b93();initialisestate53b93();
-initialisehasTriggeredde80c();initialisestatede80c();
+initialiseisBlacklisted();initialisejustWhitelisted();initialisesinceWhitelisted();
+initialiseaccountCreationTimes();
+initialisesinceLastActivity();
 }
 
-static HashMap<UserInfo, Boolean> hasTriggeredfbaa4 = new HashMap<UserInfo, Boolean>();
-static void initialisehasTriggeredfbaa4(){hasTriggeredfbaa4= new HashMap<UserInfo, Boolean>(); }
+static HashMap<UserInfo, Boolean> isBlacklisted = new HashMap<UserInfo, Boolean>();
+static void initialiseisBlacklisted(){isBlacklisted= new HashMap<UserInfo, Boolean>(); }
 
 
-static HashMap<UserInfo, String> statefbaa4 = new HashMap<UserInfo, String>();
-static void initialisestatefbaa4(){statefbaa4= new HashMap<UserInfo, String>(); }
+static HashMap<UserInfo, Boolean> justWhitelisted = new HashMap<UserInfo, Boolean>();
+static void initialisejustWhitelisted(){justWhitelisted= new HashMap<UserInfo, Boolean>(); }
 
 
-
-static HashMap<UserInfo, Boolean> hasTriggeredd50c0 = new HashMap<UserInfo, Boolean>();
-static void initialisehasTriggeredd50c0(){hasTriggeredd50c0= new HashMap<UserInfo, Boolean>(); }
-
-
-static HashMap<UserInfo, String> stated50c0 = new HashMap<UserInfo, String>();
-static void initialisestated50c0(){stated50c0= new HashMap<UserInfo, String>(); }
-
-
-static HashMap<UserInfo, Integer> count = new HashMap<UserInfo, Integer>();
-static void initialisecount(){count= new HashMap<UserInfo, Integer>(); }
+static HashMap<UserInfo, Long> sinceWhitelisted = new HashMap<UserInfo, Long>();
+static void initialisesinceWhitelisted(){sinceWhitelisted= new HashMap<UserInfo, Long>(); }
 
 
 
-static HashMap<UserInfo, Boolean> hasTriggered53b93 = new HashMap<UserInfo, Boolean>();
-static void initialisehasTriggered53b93(){hasTriggered53b93= new HashMap<UserInfo, Boolean>(); }
-
-
-static HashMap<UserInfo, String> state53b93 = new HashMap<UserInfo, String>();
-static void initialisestate53b93(){state53b93= new HashMap<UserInfo, String>(); }
+static HashMap<UserInfo, ArrayList<Long>> accountCreationTimes = new HashMap<UserInfo, ArrayList<Long>>();
+static void initialiseaccountCreationTimes(){accountCreationTimes= new HashMap<UserInfo, ArrayList<Long>>(); }
 
 
 
-static HashMap<UserSession, Boolean> hasTriggeredde80c = new HashMap<UserSession, Boolean>();
-static void initialisehasTriggeredde80c(){hasTriggeredde80c= new HashMap<UserSession, Boolean>(); }
-
-
-static HashMap<UserSession, String> statede80c = new HashMap<UserSession, String>();
-static void initialisestatede80c(){statede80c= new HashMap<UserSession, String>(); }
+static HashMap<UserSession, Timer> sinceLastActivity = new HashMap<UserSession, Timer>();
+static void initialisesinceLastActivity(){sinceLastActivity= new HashMap<UserSession, Timer>(); }
 
 
 
-before (UserInfo u): call(* UserInfo.makeDisabled(..)) &&
+after (UserInfo u): call(* UserInfo.makeBlacklisted(..)) &&
     target(u) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredfbaa4.computeIfAbsent(u, (k) -> false) && statefbaa4.computeIfAbsent(u, (k) -> "Enabled").equals("Enabled") && (true)) {
-{}statefbaa4.put(u,"Disabled");hasTriggeredfbaa4.put(u,true);}
-  }
+isBlacklisted.put(u,true);justWhitelisted.put(u,false);}
 
 
-before (UserInfo u): call(* UserInfo.makeEnabled(..)) &&
+after (UserInfo u): call(* UserInfo.makeWhitelisted(..)) &&
     target(u) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredfbaa4.computeIfAbsent(u, (k) -> false) && statefbaa4.computeIfAbsent(u, (k) -> "Enabled").equals("Disabled") && (true)) {
-{}statefbaa4.put(u,"Enabled");hasTriggeredfbaa4.put(u,true);}
+    if (isBlacklisted.computeIfAbsent(u, (k) -> false)) {
+justWhitelisted.put(u,true);isBlacklisted.put(u,false);sinceWhitelisted.put(u,TimerManager.currentTimeMillis());}
   }
 
 
-before (UserInfo u): call(* UserInfo.withdrawFrom(..)) &&
+after (UserInfo u, String account_number, double amount): call(* UserInfo.withdrawFrom(..)) &&
+    args(account_number, amount) &&
     target(u) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredfbaa4.computeIfAbsent(u, (k) -> false) && statefbaa4.computeIfAbsent(u, (k) -> "Enabled").equals("Disabled") && (true)) {
-{}statefbaa4.put(u,"Bad");hasTriggeredfbaa4.put(u,true);System.out.println("P5 violated");}
+    if (justWhitelisted.computeIfAbsent(u, (k) -> false) && TimerManager.currentTimeMillis() - sinceWhitelisted.computeIfAbsent(u, (k) -> 0l) < 12*60*60*1000 && amount > 100) {
+Assertion.alert("P12 violated");}
   }
 
 
-before (UserInfo u): call(* UserInfo.makeGreylisted(..)) &&
+after (UserInfo u): call(* UserInfo.createAccount(..)) &&
     target(u) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("NonGreylisted") && (true)) {
-{count.put(u,0);}stated50c0.put(u,"Greylisted");hasTriggeredd50c0.put(u,true);}
-  }
+while (accountCreationTimes.computeIfAbsent(u, (k) -> new ArrayList<Long>()).size()>0) { if (accountCreationTimes.computeIfAbsent(u, (k) -> new ArrayList<Long>()).get(0) > TimerManager.currentTimeMillis() + 24*60*60*1000l) accountCreationTimes.computeIfAbsent(u, (k) -> new ArrayList<Long>()).remove(0); else break; } if (accountCreationTimes.computeIfAbsent(u, (k) -> new ArrayList<Long>()).size() > 2) Assertion.alert("P13 violated"); else accountCreationTimes.computeIfAbsent(u, (k) -> new ArrayList<Long>()).add(TimerManager.currentTimeMillis());}
 
 
-before (UserInfo u): call(* UserInfo.depositTo(..)) &&
-    target(u) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("Greylisted") && (true)) {
-{count.put(u,count.computeIfAbsent(u, (k) -> 0) + 1);}stated50c0.put(u,"Greylisted");hasTriggeredd50c0.put(u,true);}
-  }
-
-
-before (UserInfo u): call(* UserInfo.makeBlacklisted(..)) &&
-    target(u) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("Greylisted") && (true)) {
-{count.put(u,0);}stated50c0.put(u,"NonGreylisted");hasTriggeredd50c0.put(u,true);}
-  }
-
-
-before (UserInfo u): call(* UserInfo.makeWhitelisted(..)) &&
-    target(u) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("Greylisted") && (count.computeIfAbsent(u, (k) -> 0) >= 3)) {
-{}stated50c0.put(u,"NonGreylisted");hasTriggeredd50c0.put(u,true);}
-  }
-
-
-before (UserInfo u): call(* UserInfo.makeWhitelisted(..)) &&
-    target(u) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("Greylisted") && (count.computeIfAbsent(u, (k) -> 0) < 3)) {
-{}stated50c0.put(u,"Bad");hasTriggeredd50c0.put(u,true);System.out.println("P6 violated");}
-  }
-
-
-before (UserInfo u): call(* UserInfo.openSession(..)) &&
-    target(u) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (!hasTriggered53b93.computeIfAbsent(u, (k) -> false) && state53b93.computeIfAbsent(u, (k) -> "Start").equals("Start") && (true)) {
-{ Verification.countSessions.put(u,Verification.countSessions.getOrDefault(u,0)+1); if (Verification.countSessions.getOrDefault(u,0) > 3) { Assertion.alert("P9 violated"); } }state53b93.put(u,"Start");hasTriggered53b93.put(u,true);}
-  }
-
-
-before (UserInfo u): call(* UserInfo.closeSession(..)) &&
-    target(u) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (!hasTriggered53b93.computeIfAbsent(u, (k) -> false) && state53b93.computeIfAbsent(u, (k) -> "Start").equals("Start") && (true)) {
-{ Verification.countSessions.put(u,Verification.countSessions.get(u)-1); }state53b93.put(u,"Start");hasTriggered53b93.put(u,true);}
-  }
-
-
-before (UserSession s): call(* UserSession.openSession(..)) &&
+after (UserSession s): call(* UserSession.openSession(..)) &&
+    args() &&
     target(s) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredde80c.computeIfAbsent(s, (k) -> false) && statede80c.computeIfAbsent(s, (k) -> "LoggedOut").equals("LoggedOut") && (true)) {
-{}statede80c.put(s,"LoggedIn");hasTriggeredde80c.put(s,true);}
-  }
-
-
-before (UserSession s): call(* UserSession.closeSession(..)) &&
-    target(s) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredde80c.computeIfAbsent(s, (k) -> false) && statede80c.computeIfAbsent(s, (k) -> "LoggedOut").equals("LoggedIn") && (true)) {
-{}statede80c.put(s,"LoggedOut");hasTriggeredde80c.put(s,true);}
-  }
+sinceLastActivity.computeIfAbsent(s, (k) -> new Timer("sinceLastActivity",15*60*1000l)).enable(); sinceLastActivity.computeIfAbsent(s, (k) -> new Timer("sinceLastActivity",15*60*1000l)).reset();}
 
 
 before (UserSession s): call(* UserSession.log(..)) &&
@@ -187,23 +95,99 @@ before (UserSession s): call(* UserSession.log(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!hasTriggeredde80c.computeIfAbsent(s, (k) -> false) && statede80c.computeIfAbsent(s, (k) -> "LoggedOut").equals("LoggedOut") && (true)) {
-{}statede80c.put(s,"Bad");hasTriggeredde80c.put(s,true);System.out.println("P10 violated");}
-  }
+sinceLastActivity.computeIfAbsent(s, (k) -> new Timer("sinceLastActivity",15*60*1000l)).reset();}
 
 
-before (): call(* *.*(..)) &&
+before (UserSession s): call(* UserSession.closeSession(..)) &&
+    args() &&
+    target(s) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (true) { hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> (); hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> (); hasTriggered53b93 = new HashMap<UserInfo,Boolean> (); hasTriggeredde80c = new HashMap<UserSession,Boolean> ();}
-  }
+sinceLastActivity.computeIfAbsent(s, (k) -> new Timer("sinceLastActivity",15*60*1000l)).disable();}
 
-after (): call(* *.*(..)) &&
+
+before (): call(* BackEnd.initialise(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (true) { hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> (); hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> (); hasTriggered53b93 = new HashMap<UserInfo,Boolean> (); hasTriggeredde80c = new HashMap<UserSession,Boolean> (); }
+    if (true) { Verification.initialisedTime = TimerManager.currentTimeMillis(); }
+  }
+
+before (): call(* UserInfo.openSession(..)) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (TimerManager.currentTimeMillis() - Verification.initialisedTime < 10*1000) { Assertion.alert("P11 violated"); }
+  }
+
+after (): call(* BackEnd.initialise(..)) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (Verification.initialisationTimerSet) { Assertion.alert("P14 violated"); }
+  }
+
+after (): call(* BackEnd.initialise(..)) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (true) { Verification.initialisationTimer.reset(); Verification.fitsReconciled = false; Verification.initialisationTimerSet = true;   }
+  }
+
+after (): call(* FrontEnd.ADMIN_reconcile(..)) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (true) { Verification.fitsReconciled = true; Verification.initialisationTimerSet = false; }
+  }
+
+after (Timer t): call(* Timer.fire(..)) &&
+    target(t) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (t.getIdentifier().equals("initialisationTimer") && !Verification.fitsReconciled) { Assertion.alert("P14 violated"); }
+  }
+
+after (String s): call(* UserSession.log(..)) &&
+    args(s) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (s.startsWith("Request new account with number <")) { s = s.substring(s.indexOf("<")+1); s = s.substring(0,s.length()-1); new Timer("awaitingApproval" + s,24*60*60*1000l).reset(); Verification.awaitingApproval.add(s); }
+  }
+
+after (Integer uid, String accnum): call(* *.ADMIN_approveOpenAccount(..)) &&
+    args(uid, accnum) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (true) { Verification.awaitingApproval.remove(accnum); }
+  }
+
+after (Integer uid, String accnum): call(* *.ADMIN_rejectOpenAccount(..)) &&
+    args(uid, accnum) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (true) { Verification.awaitingApproval.remove(accnum); }
+  }
+
+after (Timer t): call(* Timer.fire(..)) &&
+    target(t) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (t.getIdentifier().startsWith("awaitingApproval")) { if (Verification.awaitingApproval.contains(t.getIdentifier().substring(16))) Assertion.alert("P15 violated"); }
+  }
+
+after (Timer t): call(* Timer.fire(..)) &&
+    target(t) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (t.getIdentifier().startsWith("sinceLastActivity")) { Assertion.alert("P16 violated"); }
   }
 
 }

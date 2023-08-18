@@ -2,41 +2,47 @@
 package rv;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import assertion.Assertion;
 import fits.BackEnd;
 import fits.BankAccount;
 import fits.UserInfo;
 
+import timers.*;
+
+
 public class Verification {
-static public boolean fitsHasBeenInitialised;
-static public HashMap<UserInfo,HashMap<Integer, Integer>> accountRequestCount;
-static public Integer fitsExternalMoneyTransferCount;
-static public Double fitsExternalMoneyTransferAmount;
+
+//Property 11
+public static Long initialisedTime;
+
+//Property 14
+public static Timer initialisationTimer;
+public static Boolean fitsReconciled = false;
+public static Boolean initialisationTimerSet = false;
+
+//Property 15
+public static HashSet<String> awaitingApproval;
 
 static public void setupVerification()
 {
-fitsHasBeenInitialised = false;
-accountRequestCount = new HashMap<UserInfo,HashMap<Integer, Integer>>();
-fitsExternalMoneyTransferCount = 0;
-fitsExternalMoneyTransferAmount = 0.0;
+TimerManager.reset();
+
+//Property 11
+initialisedTime = 0l;
+
+//Property 14
+initialisationTimer = new Timer("initialisationTimer",5*60*1000l);
+fitsReconciled = false;
+initialisationTimerSet = false;
+
+//Property 15
+awaitingApproval = new HashSet<String>();
 
 Properties.setupVerification();
 }
 
-// Property 4 verification
-// A bank account approved by the administrator may not have the same account
-// number as any other bank account already existing in the system
-
-public static void fitsAdminApprovingAccount(String new_account_number, BackEnd fits) {
-for (UserInfo user : fits.getUsers()) {
-for (BankAccount account : user.getAccounts()) {
-if (account.isOpen()) {
-Assertion.check(!account.getAccountNumber().equals(new_account_number), "P4 violated");
-}
-}
-}
-}
 
 }
 

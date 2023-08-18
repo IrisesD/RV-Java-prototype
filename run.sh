@@ -12,6 +12,43 @@ then
     javac -d . */*.java;
     java automata.Main;
     cd ../monitoredfits/;
-    ajc -18 */*.java */*.aj -cp aspectjrt.jar:;
+    ajc -18 */*.java */*.aj -cp aspectjrt.jar;
     java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar fits.Main
+elif [ $1 == "re" ];
+then
+    cd src/re/;
+    javac -d . */*.java;
+    java re.Main;
+    jar -cvf ./re.jar ./re;
+    jar -cvf ./egcl.jar ./egcl;
+    cp ./re.jar ../monitoredfits/re.jar;
+    cp ./egcl.jar ../monitoredfits/egcl.jar;
+    cd ../monitoredfits/;
+    ajc -18 */*.java */*.aj -cp aspectjrt.jar:re.jar:egcl.jar;
+    java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar:re.jar:egcl.jar fits.Main
+elif [ $1 == "ltl" ];
+then
+    cd src/ltl/;
+    javac -d . */*.java;
+    java ltl.Main;
+    jar -cvf ./ltl.jar ./ltl;
+    jar -cvf ./egcl.jar ./egcl;
+    cp ./ltl.jar ../monitoredfits/ltl.jar;
+    cp ./egcl.jar ../monitoredfits/egcl.jar;
+    cd ../monitoredfits/;
+    ajc -18 */*.java */*.aj -cp aspectjrt.jar:ltl.jar:egcl.jar;
+    java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar:ltl.jar:egcl.jar fits.Main
+elif [ $1 == "rtime" ];
+then
+    cd src/rtime/;
+    javac -d . */*.java;
+    java egcl.Main;
+    jar -cvf ./timers.jar ./timers;
+    jar -cvf ./egcl.jar ./egcl;
+    cp ./timers.jar ../monitoredfits_rtime/timers.jar;
+    cp ./egcl.jar ../monitoredfits_rtime/egcl.jar;
+    cd ../monitoredfits_rtime/;
+    ajc -18 */*.java */*.aj -cp aspectjrt.jar:timers.jar:egcl.jar;
+    java -javaagent:aspectjweaver.jar -cp .:aspectjrt.jar:timers.jar:egcl.jar fits.Main
 fi
+

@@ -19,7 +19,7 @@ public class Main {
 						// "/Users/gordon/Library/Containers/com.softwareambience.Unclutter/Data/Library/Application
 						// Support/Unclutter/FileStorage/Research/Writing
 						// Now/rv-book/final-code/project-sources/chapter08-solutions/rv/Verification.java");
-						path + "monitoredfits/rv/Verification.java");
+						path + "monitoredfits_rtime/rv/Verification.java");
 
 				BufferedWriter output = new BufferedWriter(new FileWriter(file_java));
 				output.write(script.getVerificationCode());
@@ -29,7 +29,7 @@ public class Main {
 						// "/Users/gordon/Library/Containers/com.softwareambience.Unclutter/Data/Library/Application
 						// Support/Unclutter/FileStorage/Research/Writing
 						// Now/rv-book/final-code/project-sources/chapter08-solutions/rv/properties.aj");
-						path + "monitoredfits/rv/Properties.aj");
+						path + "monitoredfits_rtime/rv/Properties.aj");
 				// File file_aj = new File("/Users/chris/Drive
 				// Work/Repositories/rv-book/code/Code
 				// solutions/03-GCL-RS-Solution/src/transactionsystem/Properties.aj");
