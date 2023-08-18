@@ -1,42 +1,48 @@
 
+
 package rv;
 
 import java.util.HashMap;
 
-import assertion.Assertion;
-import fits.BackEnd;
-import fits.BankAccount;
 import fits.UserInfo;
+import fits.UserSession;
 
 public class Verification {
-static public boolean fitsHasBeenInitialised;
-static public HashMap<UserInfo,HashMap<Integer, Integer>> accountRequestCount;
-static public Integer fitsExternalMoneyTransferCount;
-static public Double fitsExternalMoneyTransferAmount;
 
-static public void setupVerification()
-{
-fitsHasBeenInitialised = false;
-accountRequestCount = new HashMap<UserInfo,HashMap<Integer, Integer>>();
-fitsExternalMoneyTransferCount = 0;
-fitsExternalMoneyTransferAmount = 0.0;
+static public HashMap<UserInfo,Integer> countSessions;
 
+static public void setupVerification() {
+// required to reset the automata to their initial state
 Properties.setupVerification();
+
+
+hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> ();
+statefbaa4 = new HashMap<UserInfo,String> ();
+
+hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> ();
+stated50c0 = new HashMap<UserInfo,String> ();
+
+hasTriggered53b93 = new HashMap<UserInfo,Boolean> ();
+state53b93 = new HashMap<UserInfo,String> ();
+
+hasTriggeredde80c = new HashMap<UserSession,Boolean> ();
+statede80c = new HashMap<UserSession,String> ();
+countSessions = new HashMap<UserInfo,Integer>();
+
 }
 
-// Property 4 verification
-// A bank account approved by the administrator may not have the same account
-// number as any other bank account already existing in the system
 
-public static void fitsAdminApprovingAccount(String new_account_number, BackEnd fits) {
-for (UserInfo user : fits.getUsers()) {
-for (BankAccount account : user.getAccounts()) {
-if (account.isOpen()) {
-Assertion.check(!account.getAccountNumber().equals(new_account_number), "P4 violated");
-}
-}
-}
-}
 
+static public HashMap<UserInfo,String> statefbaa4;
+static public HashMap<UserInfo,Boolean> hasTriggeredfbaa4;
+
+static public HashMap<UserInfo,String> stated50c0;
+static public HashMap<UserInfo,Boolean> hasTriggeredd50c0;
+
+static public HashMap<UserInfo,String> state53b93;
+static public HashMap<UserInfo,Boolean> hasTriggered53b93;
+
+static public HashMap<UserSession,String> statede80c;
+static public HashMap<UserSession,Boolean> hasTriggeredde80c;
 }
 

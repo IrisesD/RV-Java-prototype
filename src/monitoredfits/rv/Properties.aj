@@ -1,47 +1,64 @@
 
+
 package rv;
 
-import java.util.HashMap;
-
 import assertion.Assertion;
-import fits.BackEnd;
-import fits.BankAccount;
-import fits.FrontEnd;
 import fits.UserInfo;
 import fits.UserSession;
+import java.util.HashMap;
+
+
+
+
 
 
 
 
 public aspect Properties {
 static void setupVerification() {
-initialiseisEnabled();
-initialiseisGreylisted();initialiseincomingTransfersSinceGreylisted();
-initialisenumberOfOpenSessions();
-initialisesessionIsOpen();
+initialisehasTriggeredfbaa4();initialisestatefbaa4();
+initialisehasTriggeredd50c0();initialisestated50c0();initialisecount();
+initialisehasTriggered53b93();initialisestate53b93();
+initialisehasTriggeredde80c();initialisestatede80c();
 }
 
-static HashMap<UserInfo, Boolean> isEnabled = new HashMap<UserInfo, Boolean>();
-static void initialiseisEnabled(){isEnabled= new HashMap<UserInfo, Boolean>(); }
+static HashMap<UserInfo, Boolean> hasTriggeredfbaa4 = new HashMap<UserInfo, Boolean>();
+static void initialisehasTriggeredfbaa4(){hasTriggeredfbaa4= new HashMap<UserInfo, Boolean>(); }
+
+
+static HashMap<UserInfo, String> statefbaa4 = new HashMap<UserInfo, String>();
+static void initialisestatefbaa4(){statefbaa4= new HashMap<UserInfo, String>(); }
 
 
 
-static HashMap<UserInfo, Boolean> isGreylisted = new HashMap<UserInfo, Boolean>();
-static void initialiseisGreylisted(){isGreylisted= new HashMap<UserInfo, Boolean>(); }
+static HashMap<UserInfo, Boolean> hasTriggeredd50c0 = new HashMap<UserInfo, Boolean>();
+static void initialisehasTriggeredd50c0(){hasTriggeredd50c0= new HashMap<UserInfo, Boolean>(); }
 
 
-static HashMap<UserInfo, Integer> incomingTransfersSinceGreylisted = new HashMap<UserInfo, Integer>();
-static void initialiseincomingTransfersSinceGreylisted(){incomingTransfersSinceGreylisted= new HashMap<UserInfo, Integer>(); }
+static HashMap<UserInfo, String> stated50c0 = new HashMap<UserInfo, String>();
+static void initialisestated50c0(){stated50c0= new HashMap<UserInfo, String>(); }
+
+
+static HashMap<UserInfo, Integer> count = new HashMap<UserInfo, Integer>();
+static void initialisecount(){count= new HashMap<UserInfo, Integer>(); }
 
 
 
-static HashMap<UserInfo, Integer> numberOfOpenSessions = new HashMap<UserInfo, Integer>();
-static void initialisenumberOfOpenSessions(){numberOfOpenSessions= new HashMap<UserInfo, Integer>(); }
+static HashMap<UserInfo, Boolean> hasTriggered53b93 = new HashMap<UserInfo, Boolean>();
+static void initialisehasTriggered53b93(){hasTriggered53b93= new HashMap<UserInfo, Boolean>(); }
+
+
+static HashMap<UserInfo, String> state53b93 = new HashMap<UserInfo, String>();
+static void initialisestate53b93(){state53b93= new HashMap<UserInfo, String>(); }
 
 
 
-static HashMap<UserSession, Boolean> sessionIsOpen = new HashMap<UserSession, Boolean>();
-static void initialisesessionIsOpen(){sessionIsOpen= new HashMap<UserSession, Boolean>(); }
+static HashMap<UserSession, Boolean> hasTriggeredde80c = new HashMap<UserSession, Boolean>();
+static void initialisehasTriggeredde80c(){hasTriggeredde80c= new HashMap<UserSession, Boolean>(); }
+
+
+static HashMap<UserSession, String> statede80c = new HashMap<UserSession, String>();
+static void initialisestatede80c(){statede80c= new HashMap<UserSession, String>(); }
 
 
 
@@ -50,7 +67,9 @@ before (UserInfo u): call(* UserInfo.makeDisabled(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-isEnabled.put(u,false);}
+    if (!hasTriggeredfbaa4.computeIfAbsent(u, (k) -> false) && statefbaa4.computeIfAbsent(u, (k) -> "Enabled").equals("Enabled") && (true)) {
+{}statefbaa4.put(u,"Disabled");hasTriggeredfbaa4.put(u,true);}
+  }
 
 
 before (UserInfo u): call(* UserInfo.makeEnabled(..)) &&
@@ -58,7 +77,9 @@ before (UserInfo u): call(* UserInfo.makeEnabled(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-isEnabled.put(u,true);}
+    if (!hasTriggeredfbaa4.computeIfAbsent(u, (k) -> false) && statefbaa4.computeIfAbsent(u, (k) -> "Enabled").equals("Disabled") && (true)) {
+{}statefbaa4.put(u,"Enabled");hasTriggeredfbaa4.put(u,true);}
+  }
 
 
 before (UserInfo u): call(* UserInfo.withdrawFrom(..)) &&
@@ -66,17 +87,19 @@ before (UserInfo u): call(* UserInfo.withdrawFrom(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!isEnabled.computeIfAbsent(u, (k) -> false)) {
-Assertion.alert("P5 violated");}
+    if (!hasTriggeredfbaa4.computeIfAbsent(u, (k) -> false) && statefbaa4.computeIfAbsent(u, (k) -> "Enabled").equals("Disabled") && (true)) {
+{}statefbaa4.put(u,"Bad");hasTriggeredfbaa4.put(u,true);System.out.println("P5 violated");}
   }
 
 
-after (UserInfo u): call(* UserInfo.makeGreylisted(..)) &&
+before (UserInfo u): call(* UserInfo.makeGreylisted(..)) &&
     target(u) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-isGreylisted.put(u,true);incomingTransfersSinceGreylisted.put(u,0);}
+    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("NonGreylisted") && (true)) {
+{count.put(u,0);}stated50c0.put(u,"Greylisted");hasTriggeredd50c0.put(u,true);}
+  }
 
 
 before (UserInfo u): call(* UserInfo.depositTo(..)) &&
@@ -84,16 +107,8 @@ before (UserInfo u): call(* UserInfo.depositTo(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-incomingTransfersSinceGreylisted.put(u,incomingTransfersSinceGreylisted.computeIfAbsent(u, (k) -> 0) + 1);}
-
-
-before (UserInfo u): call(* UserInfo.makeWhitelisted(..)) &&
-    target(u) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (isGreylisted.computeIfAbsent(u, (k) -> false) && incomingTransfersSinceGreylisted.computeIfAbsent(u, (k) -> 0) < 3) {
-Assertion.alert("P6 violated");}
+    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("Greylisted") && (true)) {
+{count.put(u,count.computeIfAbsent(u, (k) -> 0) + 1);}stated50c0.put(u,"Greylisted");hasTriggeredd50c0.put(u,true);}
   }
 
 
@@ -102,7 +117,29 @@ before (UserInfo u): call(* UserInfo.makeBlacklisted(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-incomingTransfersSinceGreylisted.put(u,0);isGreylisted.put(u,false);}
+    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("Greylisted") && (true)) {
+{count.put(u,0);}stated50c0.put(u,"NonGreylisted");hasTriggeredd50c0.put(u,true);}
+  }
+
+
+before (UserInfo u): call(* UserInfo.makeWhitelisted(..)) &&
+    target(u) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("Greylisted") && (count.computeIfAbsent(u, (k) -> 0) >= 3)) {
+{}stated50c0.put(u,"NonGreylisted");hasTriggeredd50c0.put(u,true);}
+  }
+
+
+before (UserInfo u): call(* UserInfo.makeWhitelisted(..)) &&
+    target(u) &&
+   !(adviceexecution())  &&
+   !cflow(adviceexecution())  &&
+   !cflowbelow(adviceexecution())  {
+    if (!hasTriggeredd50c0.computeIfAbsent(u, (k) -> false) && stated50c0.computeIfAbsent(u, (k) -> "NonGreylisted").equals("Greylisted") && (count.computeIfAbsent(u, (k) -> 0) < 3)) {
+{}stated50c0.put(u,"Bad");hasTriggeredd50c0.put(u,true);System.out.println("P6 violated");}
+  }
 
 
 before (UserInfo u): call(* UserInfo.openSession(..)) &&
@@ -110,7 +147,9 @@ before (UserInfo u): call(* UserInfo.openSession(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-numberOfOpenSessions.put(u,numberOfOpenSessions.computeIfAbsent(u, (k) -> 0) + 1);if (numberOfOpenSessions.computeIfAbsent(u, (k) -> 0) > 3) { Assertion.alert("P9 violated"); }}
+    if (!hasTriggered53b93.computeIfAbsent(u, (k) -> false) && state53b93.computeIfAbsent(u, (k) -> "Start").equals("Start") && (true)) {
+{ Verification.countSessions.put(u,Verification.countSessions.getOrDefault(u,0)+1); if (Verification.countSessions.getOrDefault(u,0) > 3) { Assertion.alert("P9 violated"); } }state53b93.put(u,"Start");hasTriggered53b93.put(u,true);}
+  }
 
 
 before (UserInfo u): call(* UserInfo.closeSession(..)) &&
@@ -118,7 +157,9 @@ before (UserInfo u): call(* UserInfo.closeSession(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-numberOfOpenSessions.put(u,numberOfOpenSessions.computeIfAbsent(u, (k) -> 0) - 1);}
+    if (!hasTriggered53b93.computeIfAbsent(u, (k) -> false) && state53b93.computeIfAbsent(u, (k) -> "Start").equals("Start") && (true)) {
+{ Verification.countSessions.put(u,Verification.countSessions.get(u)-1); }state53b93.put(u,"Start");hasTriggered53b93.put(u,true);}
+  }
 
 
 before (UserSession s): call(* UserSession.openSession(..)) &&
@@ -126,7 +167,9 @@ before (UserSession s): call(* UserSession.openSession(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-sessionIsOpen.put(s,true);}
+    if (!hasTriggeredde80c.computeIfAbsent(s, (k) -> false) && statede80c.computeIfAbsent(s, (k) -> "LoggedOut").equals("LoggedOut") && (true)) {
+{}statede80c.put(s,"LoggedIn");hasTriggeredde80c.put(s,true);}
+  }
 
 
 before (UserSession s): call(* UserSession.closeSession(..)) &&
@@ -134,7 +177,9 @@ before (UserSession s): call(* UserSession.closeSession(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-sessionIsOpen.put(s,false);}
+    if (!hasTriggeredde80c.computeIfAbsent(s, (k) -> false) && statede80c.computeIfAbsent(s, (k) -> "LoggedOut").equals("LoggedIn") && (true)) {
+{}statede80c.put(s,"LoggedOut");hasTriggeredde80c.put(s,true);}
+  }
 
 
 before (UserSession s): call(* UserSession.log(..)) &&
@@ -142,71 +187,23 @@ before (UserSession s): call(* UserSession.log(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!sessionIsOpen.computeIfAbsent(s, (k) -> false)) {
-Assertion.alert("P10 violated");}
+    if (!hasTriggeredde80c.computeIfAbsent(s, (k) -> false) && statede80c.computeIfAbsent(s, (k) -> "LoggedOut").equals("LoggedOut") && (true)) {
+{}statede80c.put(s,"Bad");hasTriggeredde80c.put(s,true);System.out.println("P10 violated");}
   }
 
 
-before (UserInfo u): call(* *.makeGoldUser(..)) &&
-    target(u) &&
+before (): call(* *.*(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (!(u.getCountry().equals("Argentina"))) { Assertion.alert("P1 violated"); }
+    if (true) { hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> (); hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> (); hasTriggered53b93 = new HashMap<UserInfo,Boolean> (); hasTriggeredde80c = new HashMap<UserSession,Boolean> ();}
   }
 
-after (): call(* BackEnd.initialise(..)) &&
+after (): call(* *.*(..)) &&
    !(adviceexecution())  &&
    !cflow(adviceexecution())  &&
    !cflowbelow(adviceexecution())  {
-    if (true) { Verification.fitsHasBeenInitialised = true; }
-  }
-
-before (): call(* UserInfo.openSession(..)) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (!Verification.fitsHasBeenInitialised) { Assertion.alert("P2 violated"); }
-  }
-
-after (BankAccount a): call(* BankAccount.withdraw(..)) &&
-    target(a) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (a.getBalance() < 0) { Assertion.alert("P3 violated"); }
-  }
-
-after (BankAccount a): call(* BankAccount.deposit(..)) &&
-    target(a) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (a.getBalance() < 0) { Assertion.alert("P3 violated"); }
-  }
-
-before (FrontEnd fe, Integer uid, String accnum): call(* FrontEnd.ADMIN_approveOpenAccount(..)) &&
-    args(uid, accnum) &&
-    target(fe) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (true) { Verification.fitsAdminApprovingAccount(accnum,fe.getBackEnd()); }
-  }
-
-before (Integer uid, Integer sid, String to_account_number, Double amount): call(* *.USER_payToExternal(..)) &&
-    args(uid, sid, to_account_number, amount) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (true) { Verification.fitsExternalMoneyTransferCount ++; Verification.fitsExternalMoneyTransferAmount += amount; if (Verification.fitsExternalMoneyTransferCount >= 1000 || Verification.fitsExternalMoneyTransferAmount >= 1000000) { Assertion.alert("P8 violated"); } }
-  }
-
-after (): call(* *.ADMIN_reconcile(..)) &&
-   !(adviceexecution())  &&
-   !cflow(adviceexecution())  &&
-   !cflowbelow(adviceexecution())  {
-    if (true) { Verification.fitsExternalMoneyTransferCount = 0; Verification.fitsExternalMoneyTransferAmount = 0.0; }
+    if (true) { hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> (); hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> (); hasTriggered53b93 = new HashMap<UserInfo,Boolean> (); hasTriggeredde80c = new HashMap<UserSession,Boolean> (); }
   }
 
 }
