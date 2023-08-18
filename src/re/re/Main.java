@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import egcl_rtime.EGCLScript;
+import egcl.EGCLScript;
 
 public class Main {
 

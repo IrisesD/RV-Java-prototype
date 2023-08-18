@@ -1,0 +1,72 @@
+
+
+VERIFICATIONCODE
+
+package rv;
+
+import re.structure.*;
+
+public class Verification {
+
+ public static Boolean initialised = false;
+static public RegExp currentRegExp677327b6;
+static public Boolean triggered677327b6;
+
+static public void setupVerification() {
+
+currentRegExp677327b6 = new SequentialComposition(new SequentialComposition(new SequentialComposition(new Repetition(new MatchEventComplement(new Event("before","BackEnd.initialise"))),new Repetition(new SequentialComposition(new SequentialComposition(new MatchEvent(new Event("before","BackEnd.initialise")),new Repetition(new MatchEventComplement(new Event("before","BackEnd.shutdown")))),new MatchEvent(new Event("before","BackEnd.shutdown"))))),new Repetition(new MatchEventComplement(new Event("before","BackEnd.initialise")))),new MatchEvent(new Event("before","UserInfo.openSession")));
+triggered677327b6 = false;
+
+
+
+Properties.setupVerification();
+ initialised = true;} }
+
+
+
+PRELUDE
+package rv;
+
+import re.structure.*;
+import java.util.HashMap;
+
+import fits.*;
+
+import assertion.Assertion;
+
+
+
+
+RULES
+
+ 
+
+after *.*(..) | Verification.initialised -> {
+ if (!Verification.triggered677327b6) {Verification.currentRegExp677327b6 = Verification.currentRegExp677327b6.derivative(new Event("after", "#")); 
+ Verification.triggered677327b6 = true; }
+ if (Verification.currentRegExp677327b6.hasEmpty()) {
+    Assertion.alert("Violation detected on  property { BAD ((((!(before BackEnd.initialise))* ; (((before BackEnd.initialise ; (!(before BackEnd.shutdown))*) ; before BackEnd.shutdown))*) ; (!(before BackEnd.initialise))*) ; before UserInfo.openSession)}"); }
+Verification.triggered677327b6 = false; }
+
+// the code for BAD: ((((!(before BackEnd.initialise))* ; (((before BackEnd.initialise ; (!(before BackEnd.shutdown))*) ; before BackEnd.shutdown))*) ; (!(before BackEnd.initialise))*) ; before UserInfo.openSession)
+
+ before BackEnd.shutdown(..)  | -> {
+ Verification.currentRegExp677327b6 = Verification.currentRegExp677327b6.derivative(new Event("before","BackEnd.shutdown"));
+ Verification.triggered677327b6 = true;}
+
+ before UserInfo.openSession(..)  | -> {
+ Verification.currentRegExp677327b6 = Verification.currentRegExp677327b6.derivative(new Event("before","UserInfo.openSession"));
+ Verification.triggered677327b6 = true;}
+
+ before BackEnd.initialise(..)  | -> {
+ Verification.currentRegExp677327b6 = Verification.currentRegExp677327b6.derivative(new Event("before","BackEnd.initialise"));
+ Verification.triggered677327b6 = true;}
+
+
+
+before *.*(..) | Verification.initialised -> {
+ if (!Verification.triggered677327b6) {Verification.currentRegExp677327b6 = Verification.currentRegExp677327b6.derivative(new Event("before", "#")); 
+ Verification.triggered677327b6 = true; }
+ if (Verification.currentRegExp677327b6.hasEmpty()) {
+    Assertion.alert("Violation detected on  property { BAD ((((!(before BackEnd.initialise))* ; (((before BackEnd.initialise ; (!(before BackEnd.shutdown))*) ; before BackEnd.shutdown))*) ; (!(before BackEnd.initialise))*) ; before UserInfo.openSession)}"); }
+Verification.triggered677327b6 = false; }
