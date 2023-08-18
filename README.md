@@ -4,7 +4,8 @@ A Java prototype of Runtime Verification Tool
 Running on fits(Financial Transaction System).
 
 ### Usage
+Use
 ```sh
-Use ./run.sh -h 
+./run.sh -h 
 ```
 to see usage
