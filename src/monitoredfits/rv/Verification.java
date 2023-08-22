@@ -1,48 +1,48 @@
 
+
 package rv;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
-import assertion.Assertion;
-import fits.BackEnd;
-import fits.BankAccount;
 import fits.UserInfo;
-
-import timers.*;
-
+import fits.UserSession;
 
 public class Verification {
 
-//Property 11
-public static Long initialisedTime;
+static public HashMap<UserInfo,Integer> countSessions;
 
-//Property 14
-public static Timer initialisationTimer;
-public static Boolean fitsReconciled = false;
-public static Boolean initialisationTimerSet = false;
-
-//Property 15
-public static HashSet<String> awaitingApproval;
-
-static public void setupVerification()
-{
-TimerManager.reset();
-
-//Property 11
-initialisedTime = 0l;
-
-//Property 14
-initialisationTimer = new Timer("initialisationTimer",5*60*1000l);
-fitsReconciled = false;
-initialisationTimerSet = false;
-
-//Property 15
-awaitingApproval = new HashSet<String>();
-
+static public void setupVerification() {
+// required to reset the automata to their initial state
 Properties.setupVerification();
+
+
+hasTriggeredfbaa4 = new HashMap<UserInfo,Boolean> ();
+statefbaa4 = new HashMap<UserInfo,String> ();
+
+hasTriggeredd50c0 = new HashMap<UserInfo,Boolean> ();
+stated50c0 = new HashMap<UserInfo,String> ();
+
+hasTriggered53b93 = new HashMap<UserInfo,Boolean> ();
+state53b93 = new HashMap<UserInfo,String> ();
+
+hasTriggeredde80c = new HashMap<UserSession,Boolean> ();
+statede80c = new HashMap<UserSession,String> ();
+countSessions = new HashMap<UserInfo,Integer>();
+
 }
 
 
+
+static public HashMap<UserInfo,String> statefbaa4;
+static public HashMap<UserInfo,Boolean> hasTriggeredfbaa4;
+
+static public HashMap<UserInfo,String> stated50c0;
+static public HashMap<UserInfo,Boolean> hasTriggeredd50c0;
+
+static public HashMap<UserInfo,String> state53b93;
+static public HashMap<UserInfo,Boolean> hasTriggered53b93;
+
+static public HashMap<UserSession,String> statede80c;
+static public HashMap<UserSession,Boolean> hasTriggeredde80c;
 }
 
